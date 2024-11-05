@@ -1,11 +1,11 @@
 /*
 Smart AC Meter V1.0
-Author - Soumyabrata Debnath 
+Author - Soumyabrata Debnath (Electromaniac) 
 */
-#define BLYNK_TEMPLATE_ID "TMPL305u1Yyr5"
-#define BLYNK_TEMPLATE_NAME "Arduino Uno R4 Wifi"
-#define BLYNK_DEVICE_NAME "Smart AC Meter"
-#define BLYNK_AUTH_TOKEN "SYti1igmTZh5q-98muVFqt2absT2VoMX"
+#define BLYNK_TEMPLATE_ID "************************"
+#define BLYNK_TEMPLATE_NAME "**********************"
+#define BLYNK_DEVICE_NAME "************************"
+#define BLYNK_AUTH_TOKEN "*************************"
 
 //Libraries Initialization
 //Wifi Specific 
@@ -48,8 +48,8 @@ Author - Soumyabrata Debnath
 #define NC         19 //SCL
 
 char auth[] = BLYNK_AUTH_TOKEN; 
-char ssid[] = "Russo";       // WiFi SSID
-char pass[] = "0123456789";  // WiFi password
+char ssid[] = "Your WiFi SSID";       // WiFi SSID
+char pass[] = "Your WiFi password";   // WiFi password
 
 //Peripherals Initialization 
 RTC_DS3231 rtc;
