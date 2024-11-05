@@ -63,18 +63,18 @@ NTPClient timeClient(ntpUDP, "pool.ntp.org", 19800, 60000); // India Timezone (G
 
 // Variables Initialization
          bool   relayFlag = false;
-	    float  voltageRMS =   0.0;
-	    float  currentRMS =   0.0;
-	    float        watt =   0.0;
-	    float   eConsumed =   0.0; // Total energy consumed in kWh
+	float  voltageRMS =   0.0;
+	float  currentRMS =   0.0;
+	float        watt =   0.0;
+	float   eConsumed =   0.0; // Total energy consumed in kWh
           int   unitCount =     0; // To track 1 kWh units
          bool  data_saved = false; // Flag to ensure data is saved once at 9 AM
           int      mState =  HIGH; // Variable to store Hall sensor state        
-		  int     vbState =  HIGH; // Variable to store Vibration sensor state
-		  int      fState =  HIGH; // Variable to store Flame sensor state 
+          int     vbState =  HIGH; // Variable to store Vibration sensor state
+	  int      fState =  HIGH; // Variable to store Flame sensor state 
           int  mStateFlag =     0; // Variable to store Hall sensor state        
-		  int vbStateFlag =     0; // Variable to store Vibration sensor state
-		  int  fStateFlag =     0; // Variable to store Flame sensor state    		  
+	  int vbStateFlag =     0; // Variable to store Vibration sensor state
+          int  fStateFlag =     0; // Variable to store Flame sensor state    		  
           int    ledState =   LOW; // LED on/off state
     const int    unitAddr =     0; // EEPROM address to store unit count
 unsigned long    lastTime =     0;
@@ -97,7 +97,7 @@ void send_iSense() {
     if (currentRMS <= 0.1) {
         currentRMS = 0;
     }	
-	Blynk.virtualWrite(V1, currentRMS);                    // Send current to Blynk (Virtual Pin V1)    
+	Blynk.virtualWrite(V1, currentRMS);                // Send current to Blynk (Virtual Pin V1)    
 }
 void send_watt() { 
     watt = voltageRMS * currentRMS;      
@@ -130,7 +130,7 @@ void send_mSense() {
 }
 void send_vbSense() {    
     vbState = digitalRead(vbSense);                        // Read vibration sensor state
-	if (vbState == LOW) {                                  // If a vibration is detected (vibration sensor output LOW)
+	if (vbState == LOW) {                              // If a vibration is detected (vibration sensor output LOW)
         digitalWrite(relayPin, LOW);                       // Turn relay OFF
         Serial.println("Vibration detected: Relay OFF");
         vbStateFlag = 1;
@@ -138,7 +138,7 @@ void send_vbSense() {
         Blynk.virtualWrite(V9, relayFlag);       
 	} 	
 	Serial.print("vbState:");
-	Serial.println(vbState);                               // Print vbState to serial monitor   
+	Serial.println(vbState);                           // Print vbState to serial monitor   
     Blynk.virtualWrite(V7, vbStateFlag);                   // Send vbState to Blynk 
 }
 void send_fSense() {
@@ -151,7 +151,7 @@ void send_fSense() {
         Blynk.virtualWrite(V9, relayFlag);
     }     
 	Serial.print("Flame State:");
-	Serial.println(fState);                                // Print fState to serial monitor   
+	Serial.println(fState);                            // Print fState to serial monitor   
     Blynk.virtualWrite(V8, fStateFlag);                    // Send fState to Blynk 
 }
 BLYNK_WRITE(V9) {
@@ -221,38 +221,38 @@ void setup() {
     Serial.begin(9600);	 	
     pinMode(iSense, INPUT);
     pinMode(fSense, INPUT);
-	pinMode(vbSense,INPUT);
-	pinMode(mSense, INPUT_PULLUP);
-	pinMode(relayPin, OUTPUT);                             // Set relay pin as output    
-	lcd.init();           
+    pinMode(vbSense,INPUT);
+    pinMode(mSense, INPUT_PULLUP);
+    pinMode(relayPin, OUTPUT);                             // Set relay pin as output    
+    lcd.init();           
     lcd.home();
     lcd.backlight();
-	Wire.begin();
-	rtc.begin();	
+    Wire.begin();
+    rtc.begin();	
     analogReadResolution(12);
     voltageSensor.setSensitivity(500.0);    
-	Blynk.begin(auth, ssid, pass);                         // Connect to Blynk
+    Blynk.begin(auth, ssid, pass);                         // Connect to Blynk
     dht.begin();                                           // Initialize DHT sensor      
     Blynk.syncVirtual(V9);
-	timer.setInterval(1000L, send_vSense);                 // Send voltage data every 1 seconds
-	timer.setInterval(1000L, send_iSense);                 // Send current data every 1 seconds
-	timer.setInterval(1000L, send_watt);                   // Send Watt    data every 1 seconds
-	timer.setInterval(1000L, send_unit);                   // Send Unit counted every 1 seconds
-	timer.setInterval(1000L, send_tSense);                 // Send T/H     data every 1 seconds
+    timer.setInterval(1000L, send_vSense);                 // Send voltage data every 1 seconds
+    timer.setInterval(1000L, send_iSense);                 // Send current data every 1 seconds
+    timer.setInterval(1000L, send_watt);                   // Send Watt    data every 1 seconds
+    timer.setInterval(1000L, send_unit);                   // Send Unit counted every 1 seconds
+    timer.setInterval(1000L, send_tSense);                 // Send T/H     data every 1 seconds
     timer.setInterval(1000L, send_mSense);                 // Send Magnet  data every 1 seconds
     timer.setInterval(1000L, send_vbSense);                // Send Vibration    every 1 seconds
-	timer.setInterval(1000L, send_fSense);                 // Send Flame data   every 1 seconds	
+    timer.setInterval(1000L, send_fSense);                 // Send Flame data   every 1 seconds	
     unitCount = readUnitCount();                           // Retrieve last saved unit count from EEPROM
     Serial.print("Restored Unit Count: ");
     Serial.println(unitCount);         
     timeClient.begin();
-	time_update();    
-	File dataFile = SD.open("units.csv", FILE_WRITE);
+    time_update();    
+    File dataFile = SD.open("units.csv", FILE_WRITE);
     if (dataFile) {
         dataFile.println("Date,Units Consumed");           // Add a header row
         dataFile.close();
     }
-	strip.begin();                                         // Initialize the strip
+    strip.begin();                                         // Initialize the strip
     strip.show();                                          // Initialize all pixels to 'off'  
     setLEDColor(0, 0, 10); 
     delay(2000);                                           // Keep it on for 2 seconds    
@@ -263,9 +263,9 @@ void loop() {
     Blynk.run();  // Run Blynk
     timer.run();  // Run timer    
     int state = digitalRead(relayPin);	
-	if (state == LOW){	
-		setLEDColor(20, 0, 0);
-	}
+    if (state == LOW){	
+	setLEDColor(20, 0, 0);
+    }
     unsigned long currentTime = millis();
     if (currentTime - lastTime >= 1000) {
              lastTime  = currentTime;            
@@ -273,11 +273,11 @@ void loop() {
         float   energy = (power / 1000.0) / 3600.0;        // Convert power to kWh over 1 second             
             eConsumed += energy;                           // Accumulate energy consumed    
         if (eConsumed >= 1.0)                              // Check if 1 kWh (1 unit) has been consumed
-	    {
+	{
             unitCount +=   1;                              // Increment 1 unit
             eConsumed -= 1.0;                              // Reset energy consumption by 1 kWh
             writeUnitCount(unitCount);                     // Store updated count in EEPROM
-			Serial.print("1 Unit Consumed. Total Units: ");
+	    Serial.print("1 Unit Consumed. Total Units: ");
             Serial.println(unitCount);
         }    
         Serial.print("Voltage: ");
@@ -290,9 +290,9 @@ void loop() {
         Serial.print(eConsumed);
         Serial.println(" kWh");
       
-		lcd.init();
+	lcd.init();
         lcd.clear();
-		lcd.setCursor(0, 0);           
+	lcd.setCursor(0, 0);           
         lcd.print(voltageRMS,0);
         lcd.print("V");	
         lcd.setCursor(5, 0);           
@@ -303,18 +303,18 @@ void loop() {
         lcd.print("W");		
         lcd.setCursor(0, 1);
         if (state == LOW){	
-		    lcd.print("Cuttoff");
-	    }
+	    lcd.print("Cuttoff");
+	}
         else{
             lcd.print(eConsumed,3);
-		    lcd.print("kWh");
+	    lcd.print("kWh");
         }	
-		int unitPosition = 15 - String(unitCount).length(); 
+	int unitPosition = 15 - String(unitCount).length(); 
         lcd.setCursor(unitPosition, 1);
         lcd.print(unitCount);
         lcd.print("U");        
     }	
-	unsigned long currentMillis = millis();
+    unsigned long currentMillis = millis();
     static unsigned long previousMillis = 0;
     static unsigned long ledOnMillis = 0;
     static bool ledState = LOW;
@@ -332,15 +332,15 @@ void loop() {
             setLEDColor(0, 0, 0);                          // Turn off LED
             ledState = LOW;
         }
-	}
+    }
     if (watt <= 0 && state == HIGH){
         setLEDColor(0, 0, 0);
     }
-	if (currentMillis - CprevMillis >= 60000) {
+    if (currentMillis - CprevMillis >= 60000) {
         CprevMillis = currentMillis;                       // Save the last time the function was called
         time_update();                                     // Run the time update function
     }
-	DateTime now = rtc.now();                              // Get current time from RTC	
+    DateTime now = rtc.now();                              // Get current time from RTC	
     if (now.hour() == 9 && now.minute() == 0 && now.second() == 0 && !data_saved) {
         saveDataToCSV();                                   // Save data to SD card
         data_saved = true;                                 // Ensure data is saved only once at 9am
