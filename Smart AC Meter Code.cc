@@ -164,7 +164,7 @@ BLYNK_WRITE(V9) {
 	   vbStateFlag = 0;
 		fStateFlag = 0;
     } 
-	else {
+    else {
         digitalWrite(relayPin, LOW);                       // Turn relay ON
     }
 }
@@ -198,7 +198,7 @@ void saveDataToCSV() {
         dataFile.close();  // Close the file
         Serial.println("Data saved to SD card as CSV.");
     } 
-	else {
+    else {
     Serial.println("Error opening file.");
     }
 }
